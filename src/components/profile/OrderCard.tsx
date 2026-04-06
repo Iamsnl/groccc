@@ -18,7 +18,7 @@ export function OrderCard({ order }: { order: any }) {
                     <CardTitle className="text-lg text-emerald-600 dark:text-emerald-400">
                         Order #{order.id.slice(-6).toUpperCase()}
                     </CardTitle>
-                    <CardDescription className="mt-1">
+                    <CardDescription className="mt-1" suppressHydrationWarning>
                         Placed on {new Date(order.createdAt).toLocaleDateString()} • {order.orderItems.length} items
                     </CardDescription>
                 </div>

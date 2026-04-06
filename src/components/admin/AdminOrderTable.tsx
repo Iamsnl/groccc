@@ -57,7 +57,7 @@ export function AdminOrderTable({ orders }: { orders: any[] }) {
               >
                 <td className="px-6 py-4 font-medium">#{order.id.slice(-6).toUpperCase()}</td>
                 <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{order.user?.name || "Guest"}</td>
-                <td className="px-6 py-4">{new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
+                <td className="px-6 py-4" suppressHydrationWarning>{new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
                 <td className="px-6 py-4">{order.orderItems?.length || 0}</td>
                 <td className="px-6 py-4 text-right font-bold text-emerald-600">₹{order.total.toFixed(2)}</td>
                 <td className="px-6 py-4 text-center">

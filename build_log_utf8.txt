@@ -1,0 +1,131 @@
+﻿
+> grocery-store@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+- Experiments (use with caution):
+  Γ£ô forceSwcTransforms
+
+node.exe : ΓÜá The 
+"middleware" file 
+convention is 
+deprecated. Please use 
+"proxy" instead. Learn 
+more: https://nextjs.org/
+docs/messages/middleware-
+to-proxy
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo       
+       : NotSpecified:   
+  (ΓÜá The "middle...l   
+ eware-to-proxy:Strin    
+g) [], RemoteExcepti    
+on
+    + FullyQualifiedErro 
+   rId : NativeCommandE  
+  rror
+ 
+  Creating an optimized production build ...
+Γ¿» You are using 
+configuration and/or 
+tools that are not yet
+supported by Next.js 
+with Turbopack:
+
+
+- Unsupported Next.js 
+configuration option(s) 
+(next.config.js)
+  Turbopack will ignore 
+the following 
+configuration options:
+    - experimental.forceS
+wcTransforms
+
+
+ΓÜá Learn more about how 
+to configure Turbopack 
+with Next.js:
+https://nextjs.org/docs/a
+pp/api-reference/config/n
+ext-config-js/turbopack
+Γ£ô Compiled successfully in 12.3s
+  Running TypeScript ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/28) ...
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+  Generating static pages using 3 workers (7/28) 
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."email", "public"."User"."emailVerified", "public"."User"."image", "public"."User"."password", "public"."User"."role", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."createdAt" DESC OFFSET $1
+ReferenceError: location 
+is not defined
+    at o (C:\Users\USER\.
+gemini\antigravity\scratc
+h\grocery-store\.next\ser
+ver\chunks\ssr\[root-of-t
+he-server]__f962dd61._.js
+:1:4427)
+  Generating static pages using 3 workers (14/28) 
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2,$3) OFFSET $4
+prisma:query SELECT "public"."Product"."id", "public"."Product"."name", "public"."Product"."slug", "public"."Product"."description", "public"."Product"."price", "public"."Product"."discountPrice", "public"."Product"."images", "public"."Product"."stock", "public"."Product"."categoryId", "public"."Product"."isFeatured", "public"."Product"."isTrending", "public"."Product"."createdAt", "public"."Product"."updatedAt" FROM "public"."Product" WHERE 1=1 ORDER BY "public"."Product"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE "public"."StoreSettings"."id" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."StoreSettings"."id", "public"."StoreSettings"."storeName", "public"."StoreSettings"."updatedAt" FROM "public"."StoreSettings" WHERE ("public"."StoreSettings"."id" = $1 AND 1=1) LIMIT $2 OFFSET $3
+Error occurred 
+prerendering page 
+"/admin/customers". Read 
+more: https://nextjs.org/
+docs/messages/prerender-e
+rror
+Error [PrismaClientUnknow
+nRequestError]: 
+Invalid 
+`prisma.user.findMany()` 
+invocation:
+
+
+Error occurred during 
+query execution:
+ConnectorError(ConnectorE
+rror { 
+user_facing_error: None, 
+kind: 
+QueryError(PostgresError 
+{ code: "26000", 
+message: "prepared 
+statement \"s2\" does 
+not exist", severity: 
+"ERROR", detail: None, 
+column: None, hint: None 
+}), transient: false })
+    at async e (C:\Users\
+USER\.gemini\antigravity\
+scratch\grocery-store\.ne
+xt\server\chunks\ssr\[roo
+t-of-the-server]__0e80bb7
+1._.js:1:1640) {
+  clientVersion: 
+'5.22.0',
+  digest: '3160693536'
+}
+Export encountered an 
+error on 
+/admin/customers/page: 
+/admin/customers, 
+exiting the build.
+Γ¿» Next.js build worker 
+exited with code: 1 and 
+signal: null

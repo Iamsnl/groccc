@@ -66,11 +66,11 @@ export default async function Home() {
 
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="container mx-auto px-4 z-10 flex flex-col items-center mt-12">
-            <div className="bg-black/50 backdrop-blur-3xl p-10 md:p-16 rounded-[2.5rem] max-w-4xl w-full text-center border border-white/10 shadow-2xl">
-              <div className="inline-block px-6 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-bold tracking-[0.2em] text-emerald-300 uppercase mb-8">
+            <div className="bg-black/50 backdrop-blur-3xl p-6 md:p-16 rounded-[2.5rem] max-w-4xl w-full text-center border border-white/10 shadow-2xl">
+              <div className="inline-block px-4 py-2 md:px-6 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-[10px] md:text-xs font-bold tracking-[0.2em] text-emerald-300 uppercase mb-6 md:mb-8">
                 Next-Gen Grocery Experience
               </div>
-              <h1 className="text-5xl md:text-7xl font-sans font-medium tracking-tight text-white leading-tight mb-6 drop-shadow-md">
+              <h1 className="text-4xl md:text-7xl font-sans font-medium tracking-tight text-white leading-tight mb-6 drop-shadow-md">
                 Fresh Groceries. <br />
                 <span className="text-emerald-400 font-semibold">Delivered Fast.</span>
               </h1>
@@ -100,11 +100,11 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           {categories.map((c) => (
-            <Link key={c.slug} href={`/category/${c.slug}`} className="group relative overflow-hidden rounded-[2rem] aspect-[4/5] shadow-lg transition-all duration-500 hover:-translate-y-2">
+            <Link key={c.slug} href={`/category/${c.slug}`} className="group relative overflow-hidden rounded-2xl md:rounded-[2rem] aspect-[4/5] shadow-lg transition-all duration-500 hover:-translate-y-2">
               <Image src={c.image} alt={c.name} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 transition-opacity duration-500" />
-              <div className="absolute inset-x-0 bottom-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                <h3 className="text-2xl font-semibold text-white mb-2">{c.name}</h3>
+              <div className="absolute inset-x-0 bottom-0 p-4 md:p-8 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+                <h3 className="text-lg md:text-2xl font-semibold text-white mb-1 md:mb-2 leading-tight">{c.name}</h3>
                 <span className="text-sm font-medium text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity delay-100 flex items-center">Explore <ArrowRight className="w-4 h-4 ml-1 inline" /></span>
               </div>
             </Link>
@@ -122,29 +122,29 @@ export default async function Home() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {featured.map((p: any) => (
-            <Card key={p.id} className="group overflow-hidden rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-slate-900 relative">
-              <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800 p-4 rounded-t-[2rem]">
+            <Card key={p.id} className="group overflow-hidden rounded-2xl md:rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-slate-900 relative">
+              <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800 p-4 rounded-t-2xl md:rounded-t-[2rem]">
                 {p.discount && (
-                  <div className="absolute top-4 left-4 z-10 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold tracking-widest px-4 py-1.5 rounded-full shadow-md">
+                  <div className="absolute top-2 left-2 md:top-4 md:left-4 z-10 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] md:text-xs font-bold tracking-widest px-2 md:px-4 py-1 md:py-1.5 rounded-full shadow-md">
                     SALE
                   </div>
                 )}
                 <Image src={p.image} alt={p.name} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0" />
               </div>
-              <CardContent className="relative z-10 p-6 bg-white dark:bg-slate-900">
+              <CardContent className="relative z-10 p-4 md:p-6 bg-white dark:bg-slate-900">
                 <Link href={`/product/${p.id}`} className="block mb-2">
-                  <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  <h3 className="font-semibold text-sm md:text-lg line-clamp-2 md:line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                     {p.name}
                   </h3>
                 </Link>
-                <div className="mt-4 flex items-center justify-between">
+                <div className="mt-4 flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-0">
                   <div className="flex flex-col">
-                    <span className="font-semibold text-2xl text-slate-900 dark:text-white">
+                    <span className="font-semibold text-lg md:text-2xl text-slate-900 dark:text-white">
                       ₹{p.discount ?? p.price}
                     </span>
                     {p.discount && (
-                      <span className="text-sm text-slate-500 line-through">₹{p.price}</span>
+                      <span className="text-xs md:text-sm text-slate-500 line-through">₹{p.price}</span>
                     )}
                   </div>
                   <div className="transform transition-transform">
@@ -165,7 +165,7 @@ export default async function Home() {
 
       {/* App Promo */}
       <section className="container mx-auto px-4 mt-20 md:mt-32 pb-10">
-        <div className="relative overflow-hidden rounded-[3rem] p-10 md:p-20 shadow-2xl bg-slate-950 border border-slate-800">
+        <div className="relative overflow-hidden rounded-[2rem] md:rounded-[3rem] p-6 md:p-20 shadow-2xl bg-slate-950 border border-slate-800">
           <div className="absolute top-0 right-0 w-full md:w-1/2 h-full opacity-60 mix-blend-luminosity">
             <Image src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&q=80&w=1000" alt="App Promo" fill className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/80 md:to-transparent" />

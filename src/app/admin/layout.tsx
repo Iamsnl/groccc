@@ -10,11 +10,14 @@ import {
   Tag,
   Settings,
   LogOut,
-  LifeBuoy
+  LifeBuoy,
+  Menu,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { signOut } from "next-auth/react";
+import { useState } from "react";
 
 const sidebarNavItems = [
   { title: "Dashboard", href: "/admin", icon: <LayoutDashboard className="w-5 h-5" /> },
@@ -28,15 +31,30 @@ const sidebarNavItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-slate-100 dark:bg-slate-950">
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden" 
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 hidden lg:flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-800">
-          <Link href="/" className="text-xl font-black bg-gradient-to-r from-emerald-600 to-green-400 bg-clip-text text-transparent">
+      <aside className={cn(
+        "fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-transform duration-300 lg:static lg:translate-x-0",
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800 shrink-0">
+          <Link href="/" className="text-xl font-black bg-gradient-to-r from-emerald-600 to-green-400 bg-clip-text text-transparent" onClick={() => setIsMobileMenuOpen(false)}>
             Store Admin
           </Link>
+          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsMobileMenuOpen(false)}>
+            <X className="w-5 h-5" />
+          </Button>
         </div>
         <div className="flex-1 overflow-y-auto py-4">
           <nav className="flex flex-col gap-1 px-4">
@@ -52,6 +70,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       ? "bg-slate-900 text-white dark:bg-emerald-500/10 dark:text-emerald-400"
                       : "text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
                   )}
+                  onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.icon}
                   {item.title}
@@ -68,11 +87,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 lg:px-8">
-          <h1 className="text-xl font-semibold capitalize text-slate-800 dark:text-slate-100">
-            {pathname === "/admin" ? "Dashboard Overview" : pathname.split('/').pop()}
-          </h1>
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 lg:px-8 shrink-0">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setIsMobileMenuOpen(true)}>
+              <Menu className="w-5 h-5" />
+            </Button>
+            <h1 className="text-xl font-semibold capitalize text-slate-800 dark:text-slate-100 truncate">
+              {pathname === "/admin" ? "Dashboard Overview" : pathname.split('/').pop()}
+            </h1>
+          </div>
           <div className="flex items-center gap-4">
             <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold text-sm">
               AD

@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { prisma } from "@/lib/prisma";
 import { AdminOrderTable } from "@/components/admin/AdminOrderTable";
 
+export const dynamic = "force-dynamic";
 export default async function AdminOrdersPage() {
   const orders = await prisma.order.findMany({
     include: {
