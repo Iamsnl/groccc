@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import NextTopLoader from 'nextjs-toploader';
 import { Providers } from "@/components/Providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -25,6 +26,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <NextTopLoader color="#10b981" showSpinner={false} />
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Navbar storeName={settings.storeName} />
