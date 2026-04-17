@@ -33,6 +33,41 @@ export async function POST(req: Request) {
       }
     });
 
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (botToken) {
+      try {
+        const telegramAdmins = await prisma.user.findMany({
+          where: { role: 'ADMIN', email: { startsWith: 'tg_' } }
+        });
+        
+        const detailedOrder = await prisma.order.findUnique({
+          where: { id: order.id },
+          include: { orderItems: { include: { product: true } } }
+        });
+        let orderDetailsText = '';
+        if (detailedOrder) {
+          detailedOrder.orderItems.forEach(item => {
+              orderDetailsText += `- ${item.product.name} x${item.quantity} (₹${item.price.toFixed(2)} each)\n`;
+          });
+        }
+        
+        const msg = `🔔 *New Order Alert (Website)!*\n\nOrder ID: \`${order.id}\`\nAddress: _${order.deliveryAddress}_\nStatus: ${order.status}\n\n*Items:*\n${orderDetailsText}\n*Totals*\nSubtotal: ₹${order.total.toFixed(2)}\nShipping: ₹0.00\n*Grand Total:* ₹${order.total.toFixed(2)}`;
+        
+        for (const admin of telegramAdmins) {
+          const match = admin.email?.match(/^tg_(.+)@telegram\.local$/);
+          if (match && match[1]) {
+             await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ chat_id: match[1], text: msg, parse_mode: 'Markdown' })
+             });
+          }
+        }
+      } catch (err) {
+        console.error("Failed to notify telegram admins:", err);
+      }
+    }
+
     return NextResponse.json(order);
   } catch (error) {
     console.error("error creating order:", error);

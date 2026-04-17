@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import NextTopLoader from 'nextjs-toploader';
@@ -17,6 +17,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  colorScheme: "light",
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -30,7 +35,7 @@ export default async function RootLayout({
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Navbar storeName={settings.storeName} />
-            <main className="flex-1 bg-slate-50/50 dark:bg-slate-950">
+            <main className="flex-1 bg-slate-50/50">
               {children}
             </main>
             <Footer storeName={settings.storeName} />
