@@ -8,6 +8,7 @@ export interface CartItem {
   discountPrice: number | null;
   image: string;
   quantity: number;
+  weightGrams?: number;
 }
 
 interface CartStore {
@@ -26,15 +27,19 @@ export const useCartStore = create<CartStore>()(
       items: [],
       addItem: (item) => {
         const currentItems = get().items;
-        const existingItem = currentItems.find((i) => i.id === item.id);
-        if (existingItem) {
-          set({
-            items: currentItems.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-            ),
-          });
+        // The id includes weightGrams to make variants globally unique.
+        const variantId = item.weightGrams ? `${item.id}-${item.weightGrams}` : item.id;
+        const existingItemIndex = currentItems.findIndex((i) => i.id === variantId);
+
+        if (existingItemIndex !== -1) {
+          const newItems = [...currentItems];
+          newItems[existingItemIndex] = {
+            ...newItems[existingItemIndex],
+            quantity: newItems[existingItemIndex].quantity + 1,
+          };
+          set({ items: newItems });
         } else {
-          set({ items: [...currentItems, { ...item, quantity: 1 }] });
+          set({ items: [...currentItems, { ...item, id: variantId, quantity: 1 }] });
         }
       },
       removeItem: (id) => {
@@ -50,8 +55,9 @@ export const useCartStore = create<CartStore>()(
       totalItems: () => get().items.reduce((acc, item) => acc + item.quantity, 0),
       totalPrice: () =>
         get().items.reduce((acc, item) => {
-          const price = item.discountPrice ?? item.price;
-          return acc + price * item.quantity;
+          const basePrice = item.discountPrice ?? item.price;
+          const actualPrice = item.weightGrams ? basePrice * (item.weightGrams / 1000) : basePrice;
+          return acc + actualPrice * item.quantity;
         }, 0),
     }),
     {

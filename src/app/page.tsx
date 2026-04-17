@@ -21,7 +21,7 @@ export default async function Home() {
 
   const dbProducts = await prisma.product.findMany({
     where: { isFeatured: true },
-    take: 8,
+    take: 100,
     orderBy: { createdAt: "desc" },
   });
 

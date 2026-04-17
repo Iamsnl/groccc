@@ -54,9 +54,13 @@ export default function CartPage() {
 
                 <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h3 className="font-semibold text-lg line-clamp-1">{item.name}</h3>
+                    <h3 className="font-semibold text-lg line-clamp-1">
+                      {item.name} {item.weightGrams ? <span className="text-sm font-normal text-slate-500">({item.weightGrams >= 1000 ? `${item.weightGrams / 1000}kg` : `${item.weightGrams}g`})</span> : null}
+                    </h3>
                     <div className="text-emerald-600 font-medium text-sm">In Stock</div>
-                    <div className="mt-2 text-lg font-bold">₹{item.discountPrice ?? item.price}</div>
+                    <div className="mt-2 text-lg font-bold">
+                      ₹{item.weightGrams ? ((item.discountPrice ?? item.price) * (item.weightGrams / 1000)).toFixed(2) : (item.discountPrice ?? item.price).toFixed(2)}
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between sm:justify-end gap-6 sm:w-auto w-full">

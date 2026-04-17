@@ -25,9 +25,9 @@ export async function POST(req: Request) {
         deliveryAddress: address,
         orderItems: {
           create: items.map((item: any) => ({
-            productId: item.id,
+            productId: item.id.split('-')[0],
             quantity: item.quantity,
-            price: item.discountPrice ?? item.price,
+            price: item.weightGrams ? (item.discountPrice ?? item.price) * (item.weightGrams / 1000) : (item.discountPrice ?? item.price),
           }))
         }
       }
