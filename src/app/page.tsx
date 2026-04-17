@@ -7,6 +7,8 @@ import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { prisma } from "@/lib/prisma";
 import { getStoreSettings } from "@/lib/settings";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const categories = [
     { name: "Fruits & Vegetables", slug: "fruits-and-vegetables", image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=300&h=300&fit=crop" },
@@ -18,6 +20,7 @@ export default async function Home() {
   const storeName = (await getStoreSettings()).storeName;
 
   const dbProducts = await prisma.product.findMany({
+    where: { isFeatured: true },
     take: 8,
     orderBy: { createdAt: "desc" },
   });
