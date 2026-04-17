@@ -66,6 +66,7 @@ export function OrderCard({ order }: { order: any }) {
                                         <div>
                                             <p className="font-semibold text-sm line-clamp-2 text-slate-900 dark:text-slate-200">
                                                 {item.product?.name || 'Deleted Product'}
+                                                {item.weightGrams ? <span className="font-normal text-slate-500 ml-1">({item.weightGrams >= 1000 ? `${item.weightGrams / 1000}kg` : `${item.weightGrams}g`})</span> : null}
                                             </p>
                                             <p className="text-emerald-600 dark:text-emerald-400 text-xs font-medium mt-1">
                                                 Qty: {item.quantity}  <span className="text-slate-400 mx-1">•</span>  ₹{item.price.toFixed(2)}

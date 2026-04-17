@@ -27,6 +27,7 @@ export async function POST(req: Request) {
           create: items.map((item: any) => ({
             productId: item.id.split('-')[0],
             quantity: item.quantity,
+            weightGrams: item.weightGrams || null,
             price: item.weightGrams ? (item.discountPrice ?? item.price) * (item.weightGrams / 1000) : (item.discountPrice ?? item.price),
           }))
         }
@@ -47,7 +48,8 @@ export async function POST(req: Request) {
         let orderDetailsText = '';
         if (detailedOrder) {
           detailedOrder.orderItems.forEach(item => {
-              orderDetailsText += `- ${item.product.name} x${item.quantity} (₹${item.price.toFixed(2)} each)\n`;
+              const wStr = item.weightGrams ? ` (${item.weightGrams >= 1000 ? item.weightGrams/1000 + 'kg' : item.weightGrams + 'g'})` : '';
+              orderDetailsText += `- ${item.product.name}${wStr} x${item.quantity} (₹${item.price.toFixed(2)})\n`;
           });
         }
         
