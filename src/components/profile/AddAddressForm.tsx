@@ -23,7 +23,7 @@ export function AddAddressForm() {
         navigator.geolocation.getCurrentPosition(async (position) => {
             try {
                 const { latitude, longitude } = position.coords;
-                const mapsLink = `\n(Exact Location: https://maps.google.com/?q=${latitude},${longitude})`;
+                const mapsLink = `https://maps.google.com/?q=${latitude},${longitude}`;
                 
                 const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
                 const data = await res.json();
@@ -37,15 +37,18 @@ export function AddAddressForm() {
                     
                     if (streetInput) {
                         const roadName = data.address.road || data.address.suburb || data.address.neighbourhood || "Detected Location";
-                        streetInput.value = roadName + mapsLink;
+                        streetInput.value = roadName;
                     }
                     if (cityInput) cityInput.value = data.address.city || data.address.town || data.address.village || cityInput.value;
                     if (stateInput) stateInput.value = data.address.state || stateInput.value;
                     if (zipInput) zipInput.value = data.address.postcode || zipInput.value;
                     if (countryInput) countryInput.value = data.address.country || countryInput.value;
+                    
+                    const locInput = document.getElementById("locationUrl") as HTMLInputElement;
+                    if (locInput) locInput.value = mapsLink;
                 } else {
-                    const streetInput = document.getElementById("street") as HTMLInputElement;
-                    if (streetInput) streetInput.value = streetInput.value + mapsLink;
+                    const locInput = document.getElementById("locationUrl") as HTMLInputElement;
+                    if (locInput) locInput.value = mapsLink;
                 }
             } catch (err) {
                 setError("Failed to fetch address details automatically.");
@@ -72,6 +75,7 @@ export function AddAddressForm() {
             state: formData.get("state") as string,
             zipCode: formData.get("zipCode") as string,
             country: formData.get("country") as string,
+            locationUrl: formData.get("locationUrl") as string,
             isDefault: formData.get("isDefault") === "on",
         };
 
@@ -141,6 +145,10 @@ export function AddAddressForm() {
                         >
                             {locating ? <Loader2 className="w-5 h-5 animate-spin text-emerald-600" /> : <MapPin className="w-5 h-5 text-emerald-600" />}
                         </Button>
+                    </div>
+
+                    <div>
+                        <Input id="locationUrl" name="locationUrl" placeholder="GPS Location Link (Optional) - Auto-filled by Locate Me" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light text-slate-500 focus-visible:ring-emerald-500" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">

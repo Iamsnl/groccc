@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { street, city, state, zipCode, country } = body;
+    const { street, city, state, zipCode, country, locationUrl } = body;
 
     const address = await prisma.address.create({
       data: {
@@ -38,7 +38,8 @@ export async function POST(req: Request) {
         city,
         state: state || "NA",
         zipCode,
-        country: country || "NA"
+        country: country || "NA",
+        locationUrl
       }
     });
 

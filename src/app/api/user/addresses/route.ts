@@ -11,7 +11,7 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { street, city, state, zipCode, country, isDefault } = body;
+        const { street, city, state, zipCode, country, isDefault, locationUrl } = body;
 
         if (!street || !city || !state || !zipCode || !country) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
                 state,
                 zipCode,
                 country,
+                locationUrl,
                 isDefault: isDefault || false
             }
         });

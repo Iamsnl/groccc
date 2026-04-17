@@ -20,7 +20,8 @@ export default function CheckoutPage() {
     lastName: "",
     street: "",
     city: "",
-    zipCode: ""
+    zipCode: "",
+    locationUrl: ""
   });
   const [locating, setLocating] = useState(false);
 
@@ -32,7 +33,7 @@ export default function CheckoutPage() {
     setLocating(true);
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
-      const mapsLink = `\n(Location: https://maps.google.com/?q=${latitude},${longitude})`;
+      const mapsLink = `https://maps.google.com/?q=${latitude},${longitude}`;
       
       try {
         const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
@@ -41,15 +42,16 @@ export default function CheckoutPage() {
         if (data && data.address) {
           setFormData(prev => ({
             ...prev,
-            street: (data.address.road || data.address.suburb || data.address.neighbourhood || "Detected Location") + mapsLink,
+            street: (data.address.road || data.address.suburb || data.address.neighbourhood || "Detected Location"),
             city: data.address.city || data.address.town || data.address.village || prev.city,
-            zipCode: data.address.postcode || prev.zipCode
+            zipCode: data.address.postcode || prev.zipCode,
+            locationUrl: mapsLink
           }));
         } else {
-          setFormData(prev => ({ ...prev, street: prev.street + mapsLink }));
+          setFormData(prev => ({ ...prev, locationUrl: mapsLink }));
         }
       } catch (err) {
-        setFormData(prev => ({ ...prev, street: prev.street + mapsLink }));
+        setFormData(prev => ({ ...prev, locationUrl: mapsLink }));
       } finally {
         setLocating(false);
       }
@@ -85,6 +87,10 @@ export default function CheckoutPage() {
   const handleNextStep = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedAddressId === "new" || addresses.length === 0) {
+      if (!formData.street || !formData.city || !formData.zipCode) {
+        alert("Please complete all mandatory address fields before continuing.");
+        return;
+      }
       setLoading(true);
       try {
         const res = await fetch("/api/addresses", {
@@ -95,26 +101,31 @@ export default function CheckoutPage() {
             city: formData.city,
             state: "NA",
             zipCode: formData.zipCode,
-            country: "NA"
+            country: "NA",
+            locationUrl: formData.locationUrl
           })
         });
         if (res.ok) {
           const newAddr = await res.json();
           setAddresses([...addresses, newAddr]);
           setSelectedAddressId(newAddr.id);
+          setStep(2);
         } else {
           if (res.status === 401) {
             router.push("/login?callbackUrl=/checkout");
             return;
           }
+          throw new Error("API error saving address");
         }
       } catch (error) {
         console.error(error);
+        alert("Failed to save address. Please try again.");
       } finally {
         setLoading(false);
       }
+    } else {
+      setStep(2);
     }
-    setStep(2);
   };
 
   const handleCheckout = async (e: React.FormEvent) => {
@@ -122,9 +133,11 @@ export default function CheckoutPage() {
     setLoading(true);
 
     const selectedAddress = addresses.find(a => a.id === selectedAddressId);
-    const addressString = selectedAddress
-      ? `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.zipCode}`
-      : "Saved Address";
+    let addressString = "Saved Address";
+    if (selectedAddress) {
+      addressString = `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.zipCode}`;
+      if (selectedAddress.locationUrl) addressString += `\n📍 Map Link: ${selectedAddress.locationUrl}`;
+    }
 
     try {
       const response = await fetch("/api/orders", {
@@ -240,6 +253,10 @@ export default function CheckoutPage() {
                           {locating ? <Loader2 className="w-5 h-5 animate-spin" /> : <MapPin className="w-5 h-5" />}
                         </Button>
                       </div>
+                    </div>
+                    <div className="space-y-2 col-span-2">
+                      <label className="text-sm font-medium text-slate-500 flex items-center gap-2">GPS Location <span className="text-xs font-normal bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">Optional</span></label>
+                      <Input value={formData.locationUrl} onChange={e => setFormData({ ...formData, locationUrl: e.target.value })} placeholder="Auto-filled when you click Locate Me" className="text-slate-500 font-light" />
                     </div>
                     <div className="space-y-2 col-span-2 sm:col-span-1">
                       <label className="text-sm font-medium">City</label>
