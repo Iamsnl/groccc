@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { CreditCard, Truck, CheckCircle2, Banknote, Wallet, Smartphone } from "lucide-react";
+import { CreditCard, Truck, CheckCircle2, Banknote, Wallet, Smartphone, MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/store/useCartStore";
 import { Input } from "@/components/ui/Input";
@@ -22,6 +22,42 @@ export default function CheckoutPage() {
     city: "",
     zipCode: ""
   });
+  const [locating, setLocating] = useState(false);
+
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      const mapsLink = `\n(Location: https://maps.google.com/?q=${latitude},${longitude})`;
+      
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+        const data = await res.json();
+        
+        if (data && data.address) {
+          setFormData(prev => ({
+            ...prev,
+            street: (data.address.road || data.address.suburb || data.address.neighbourhood || "Detected Location") + mapsLink,
+            city: data.address.city || data.address.town || data.address.village || prev.city,
+            zipCode: data.address.postcode || prev.zipCode
+          }));
+        } else {
+          setFormData(prev => ({ ...prev, street: prev.street + mapsLink }));
+        }
+      } catch (err) {
+        setFormData(prev => ({ ...prev, street: prev.street + mapsLink }));
+      } finally {
+        setLocating(false);
+      }
+    }, () => {
+      setLocating(false);
+      alert("Could not get your location. Please allow location permissions.");
+    });
+  };
 
   const subtotal = totalPrice();
   const deliveryInfo = subtotal > 99 ? 0 : 5.99;
@@ -192,7 +228,18 @@ export default function CheckoutPage() {
                     </div>
                     <div className="space-y-2 col-span-2">
                       <label className="text-sm font-medium">Address</label>
-                      <Input required value={formData.street} onChange={e => setFormData({ ...formData, street: e.target.value })} placeholder="123 Shopping Avenue" />
+                      <div className="flex gap-2">
+                        <Input required value={formData.street} onChange={e => setFormData({ ...formData, street: e.target.value })} placeholder="123 Shopping Avenue" />
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          onClick={handleGetLocation} 
+                          disabled={locating}
+                          className="shrink-0 text-emerald-600 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900"
+                        >
+                          {locating ? <Loader2 className="w-5 h-5 animate-spin" /> : <MapPin className="w-5 h-5" />}
+                        </Button>
+                      </div>
                     </div>
                     <div className="space-y-2 col-span-2 sm:col-span-1">
                       <label className="text-sm font-medium">City</label>

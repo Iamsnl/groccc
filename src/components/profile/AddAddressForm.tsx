@@ -5,13 +5,58 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Plus } from "lucide-react";
+import { Plus, MapPin, Loader2 } from "lucide-react";
 
 export function AddAddressForm() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [isFormVisible, setIsFormVisible] = useState(false);
+    const [locating, setLocating] = useState(false);
+
+    const handleGetLocation = () => {
+        if (!navigator.geolocation) {
+            setError("Geolocation is not supported by your browser");
+            return;
+        }
+        setLocating(true);
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            try {
+                const { latitude, longitude } = position.coords;
+                const mapsLink = `\n(Exact Location: https://maps.google.com/?q=${latitude},${longitude})`;
+                
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+                const data = await res.json();
+                
+                if (data && data.address) {
+                    const streetInput = document.getElementById("street") as HTMLInputElement;
+                    const cityInput = document.getElementById("city") as HTMLInputElement;
+                    const stateInput = document.getElementById("state") as HTMLInputElement;
+                    const zipInput = document.getElementById("zipCode") as HTMLInputElement;
+                    const countryInput = document.getElementById("country") as HTMLInputElement;
+                    
+                    if (streetInput) {
+                        const roadName = data.address.road || data.address.suburb || data.address.neighbourhood || "Detected Location";
+                        streetInput.value = roadName + mapsLink;
+                    }
+                    if (cityInput) cityInput.value = data.address.city || data.address.town || data.address.village || cityInput.value;
+                    if (stateInput) stateInput.value = data.address.state || stateInput.value;
+                    if (zipInput) zipInput.value = data.address.postcode || zipInput.value;
+                    if (countryInput) countryInput.value = data.address.country || countryInput.value;
+                } else {
+                    const streetInput = document.getElementById("street") as HTMLInputElement;
+                    if (streetInput) streetInput.value = streetInput.value + mapsLink;
+                }
+            } catch (err) {
+                setError("Failed to fetch address details automatically.");
+            } finally {
+                setLocating(false);
+            }
+        }, () => {
+            setLocating(false);
+            setError("Could not get your location. Please allow location permissions.");
+        });
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -85,25 +130,34 @@ export function AddAddressForm() {
                 <form onSubmit={handleSubmit} className="space-y-5">
                     {error && <div className="text-red-500 text-sm font-medium bg-red-500/10 border border-red-500/20 p-3 rounded-xl">{error}</div>}
 
-                    <div>
-                        <Input name="street" required placeholder="Street Address" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light text-slate-900 dark:text-white placeholder:text-slate-400 focus-visible:ring-emerald-500" />
+                    <div className="flex gap-2">
+                        <Input id="street" name="street" required placeholder="Street Address" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light text-slate-900 dark:text-white placeholder:text-slate-400 focus-visible:ring-emerald-500" />
+                        <Button 
+                            type="button" 
+                            variant="outline" 
+                            onClick={handleGetLocation} 
+                            disabled={locating}
+                            className="shrink-0 h-12 px-3 rounded-xl border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        >
+                            {locating ? <Loader2 className="w-5 h-5 animate-spin text-emerald-600" /> : <MapPin className="w-5 h-5 text-emerald-600" />}
+                        </Button>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Input name="city" required placeholder="City" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light focus-visible:ring-emerald-500" />
+                            <Input id="city" name="city" required placeholder="City" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light focus-visible:ring-emerald-500" />
                         </div>
                         <div>
-                            <Input name="state" required placeholder="State" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light focus-visible:ring-emerald-500" />
+                            <Input id="state" name="state" required placeholder="State" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light focus-visible:ring-emerald-500" />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Input name="zipCode" required placeholder="Pincode / ZIP" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light focus-visible:ring-emerald-500" />
+                            <Input id="zipCode" name="zipCode" required placeholder="Pincode / ZIP" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light focus-visible:ring-emerald-500" />
                         </div>
                         <div>
-                            <Input name="country" required defaultValue="India" placeholder="Country" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light focus-visible:ring-emerald-500" />
+                            <Input id="country" name="country" required defaultValue="India" placeholder="Country" className="h-12 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 mx-0 rounded-xl px-4 font-light focus-visible:ring-emerald-500" />
                         </div>
                     </div>
 
