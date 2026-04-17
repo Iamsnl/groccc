@@ -29,7 +29,7 @@ export default async function RootLayout({
 }>) {
   const settings = await getStoreSettings();
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark scroll-smooth">
       <body className={inter.className}>
         <NextTopLoader color="#10b981" showSpinner={false} />
         <Providers>

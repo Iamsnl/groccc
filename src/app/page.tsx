@@ -81,11 +81,11 @@ export default async function Home() {
                 Get farm-fresh produce, dairy, and household essentials delivered right to your door with unprecedented convenience.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-white hover:bg-slate-100 text-black font-semibold border-none h-14 px-8 rounded-full transition-all transform hover:scale-105">
-                  Shop Now <ArrowRight className="ml-2 w-5 h-5" />
+                <Button asChild size="lg" className="bg-white hover:bg-slate-100 text-black font-semibold border-none h-14 px-8 rounded-full transition-all transform hover:scale-105">
+                  <Link href="#featured-deals">Shop Now <ArrowRight className="ml-2 w-5 h-5" /></Link>
                 </Button>
-                <Button size="lg" variant="outline" className="h-14 px-8 rounded-full text-white border-white/20 hover:bg-white/10 transition-all transform hover:scale-105">
-                  View Special Offers
+                <Button asChild size="lg" variant="outline" className="h-14 px-8 rounded-full text-white border-white/20 hover:bg-white/10 transition-all transform hover:scale-105">
+                  <Link href="#featured-deals">View Special Offers</Link>
                 </Button>
               </div>
             </div>
@@ -116,7 +116,7 @@ export default async function Home() {
       </section>
 
       {/* Featured Products */}
-      <section className="container mx-auto px-4 mt-12 md:mt-32">
+      <section id="featured-deals" className="container mx-auto px-4 mt-12 md:mt-32 scroll-mt-24">
         <div className="flex justify-between items-end mb-12">
           <div>
             <h2 className="text-4xl font-semibold tracking-tight text-slate-900 dark:text-white">Featured Deals</h2>
