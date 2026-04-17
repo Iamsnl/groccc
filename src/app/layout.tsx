@@ -18,8 +18,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
-  colorScheme: "light",
+  themeColor: "#020617",
+  colorScheme: "dark",
 };
 
 export default async function RootLayout({
@@ -29,13 +29,13 @@ export default async function RootLayout({
 }>) {
   const settings = await getStoreSettings();
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={inter.className}>
         <NextTopLoader color="#10b981" showSpinner={false} />
         <Providers>
           <div className="flex min-h-screen flex-col">
             <Navbar storeName={settings.storeName} />
-            <main className="flex-1 bg-slate-50/50">
+            <main className="flex-1 bg-slate-50/50 dark:bg-slate-950">
               {children}
             </main>
             <Footer storeName={settings.storeName} />
