@@ -111,7 +111,10 @@ export function AdminOrderTable({ orders }: { orders: any[] }) {
                                   </div>
                                 )}
                                 <div>
-                                  <p className="font-semibold text-sm text-slate-900 dark:text-white line-clamp-1">{item.product?.name || "Unknown Product"}</p>
+                                  <p className="font-semibold text-sm text-slate-900 dark:text-white line-clamp-1">
+                                    {item.product?.name || "Unknown Product"}
+                                    {item.weightGrams ? <span className="font-normal text-slate-500 ml-1">({item.weightGrams >= 1000 ? `${item.weightGrams / 1000}kg` : `${item.weightGrams}g`})</span> : null}
+                                  </p>
                                   <p className="text-xs text-slate-500 mt-1">Qty: {item.quantity} × ₹{item.price.toFixed(2)}</p>
                                 </div>
                               </div>
