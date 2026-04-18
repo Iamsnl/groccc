@@ -7,7 +7,7 @@ import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { prisma } from "@/lib/prisma";
 import { getStoreSettings } from "@/lib/settings";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function Home() {
   const categories = [

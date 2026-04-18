@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { prisma } from "@/lib/prisma";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 
+export const revalidate = 60;
+
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
   const dbCategory = await prisma.category.findUnique({ where: { slug } });
