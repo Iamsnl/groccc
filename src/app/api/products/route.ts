@@ -1,30 +1,35 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+import { unstable_cache } from "next/cache";
+
+const getCachedProducts = unstable_cache(
+  async (categoryId: string | null, isFeatured: boolean, isTrending: boolean, search: string | null) => {
+    const query: any = {};
+    if (categoryId) query.categoryId = categoryId;
+    if (isFeatured) query.isFeatured = true;
+    if (isTrending) query.isTrending = true;
+    if (search) query.name = { contains: search };
+
+    return await prisma.product.findMany({
+      where: query,
+      include: { category: true },
+      orderBy: { createdAt: "desc" },
+    });
+  },
+  ['products-query'],
+  { revalidate: 60, tags: ['products'] }
+);
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const categoryId = searchParams.get("categoryId");
-    const isFeatured = searchParams.get("isFeatured");
-    const isTrending = searchParams.get("isTrending");
+    const isFeatured = searchParams.get("isFeatured") === "true";
+    const isTrending = searchParams.get("isTrending") === "true";
     const search = searchParams.get("search");
 
-    const query: any = {};
-
-    if (categoryId) query.categoryId = categoryId;
-    if (isFeatured === "true") query.isFeatured = true;
-    if (isTrending === "true") query.isTrending = true;
-    if (search) {
-      query.name = { contains: search }; // SQLite does not support case-insensitive well via Prisma, but mostly ok
-    }
-
-    const products = await prisma.product.findMany({
-      where: query,
-      include: {
-        category: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const products = await getCachedProducts(categoryId, isFeatured, isTrending, search);
 
     return NextResponse.json(products);
   } catch (error) {

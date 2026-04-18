@@ -1,15 +1,24 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
-export async function GET() {
-  try {
-    const categories = await prisma.category.findMany({
+const getCachedCategories = unstable_cache(
+  async () => {
+    return await prisma.category.findMany({
       include: {
         _count: {
           select: { products: true }
         }
       }
     });
+  },
+  ['categories-list'],
+  { revalidate: 3600, tags: ['categories'] }
+);
+
+export async function GET() {
+  try {
+    const categories = await getCachedCategories();
     return NextResponse.json(categories);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
